@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- name space는 ProductRepo의 fully qualified name으로 설정한다. -->
+<mapper namespace="com.ssafy.hw.model.dao.ProductDao">
+
+	<insert id="insertProduct" parameterType="Product">
+		INSERT INTO 
+		PRODUCT 
+		(pCode, pName, price, quantity, brand, pDesc)
+		VALUES 
+		(#{pCode}, #{pName}, #{price}, #{quantity}, #{brand}, 
+		#{pDesc})
+	</insert>
+	
+	<update id="updateProduct" parameterType="Product">
+		UPDATE PRODUCT
+		SET 
+		pName = #{pName},
+		price = #{price},
+		quantity = #{quantity},
+		brand = #{brand},
+		pDesc = #{pDesc}
+		WHERE pCode = #{pCode}
+	</update>
+
+	<delete id = "deleteProduct" parameterType="String">
+		DELETE FROM product
+		WHERE pCode = #{pCode}
+	</delete>
+	
+	<select id = "selectProductBypCode" parameterType="String" resultType="Product">
+		SELECT *
+		FROM PRODUCT
+		WHERE pCode = #{pCode}
+	</select>
+	
+	<select id = "selectAllProduct" resultType="Product">
+		SELECT * 
+		FROM PRODUCT
+	</select>
+	
+	<select id="selectByCondition" parameterType="SearchCondition" resultType="Product">
+		SELECT * FROM PRODUCT
+		<if test="key!='none'">
+			where ${key} like concat('%', #{word}, '%')
+		</if>
+		<if test="orderBy!='none'">
+			order by ${orderBy} ${orderByDir}
+		</if>
+		<if test="limit">
+			limit #{offset}, #{countPerPage}
+		</if>
+	</select>
+	
+	<select id ="getTotalCount" resultType="int" parameterType="SearchCondition">
+		SELECT COUNT(*) FROM PRODUCT
+		<if test="key!='none'">
+			where ${key} like concat('%', #{word}, '%')
+		</if>
+	</select>
+	
+	
+</mapper>
